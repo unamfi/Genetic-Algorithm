@@ -1,8 +1,15 @@
+# Hernández Alarcón Jesús Alfredo
+# Vargas Mariñelarena José Brandon
+
 import random
 import string
 
-inp = input("Da una palabra en minusculas :> ")  # Objetivo a alcanzar
+inp = input("Escribe una palabra :> ")  # Objetivo a alcanzar
+inp = inp.lower()
 modelo = []
+evolution = 100
+file_population = open("population.txt",'w') 
+file_fitness = open("fitness.txt",'w')
 
 for e in inp:
     modelo.append(e)
@@ -41,6 +48,13 @@ def calcular_fitness(individual):
     return fitness
 
 
+def write_fitness(lista):
+    for element in lista:
+        file_fitness.write(str(element[0]))
+        file_fitness.write(" - ")
+        file_fitness.write(str(element[1]))
+        file_fitness.write("\n")
+
 def selection_and_reproduction(population):
     """
         Puntua todos los elementos de la poblacion (population) y se queda con los mejores
@@ -55,7 +69,9 @@ def selection_and_reproduction(population):
     puntuados = [(calcular_fitness(i), i) for i in
                  population]  # Calcula el fitness de cada individuo, y lo guarda en pares ordenados de la forma (5 , ['a','b','c','d',...])
 
-    #print("Puntuados",puntuados)
+    # print("Puntuados",puntuados)
+    write_fitness(puntuados)
+
     puntuados = [i[1] for i in sorted(puntuados, key=lambda tup: tup[0])]  # Ordena los pares ordenados y se queda solo con el array de valores
     population = puntuados
 
@@ -95,6 +111,9 @@ def show_population(p):
     for element in p:
         print(element)
 
+def write_population(p):
+    for element in p:
+        file_population.write(str(element)+"\n")
 
 population = crear_poblacion()  # Inicializar una poblacion
 #print("Poblacion Inicial:\n%s" % (population))  # Se muestra la poblacion inicial
@@ -102,7 +121,14 @@ print("Población Inicial:")
 show_population(population)
 
 # Se evoluciona la poblacion
-for i in range(100):
+for i in range(evolution):
+    if(i==0) or (i==1) or (i==evolution-2) or (i==evolution-1):
+        #print("Generacion ",i)
+        file_population.write("Generacion "+str(i)+"\n")
+        #show_population(population)
+        write_population(population)
+        #print("--------------------------------\n")
+        file_population.write("--------------------------------\n")
     population = selection_and_reproduction(population)
     population = mutation(population)
 
@@ -110,4 +136,5 @@ for i in range(100):
 print("Población Final: ")
 show_population(population)
 
+file_population.close()
 print("\n\n")
