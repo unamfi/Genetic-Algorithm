@@ -7,7 +7,7 @@ import string
 inp = input("Escribe una palabra :> ")  # Objetivo a alcanzar
 inp = inp.lower()
 modelo = []
-evolution = 100
+evolution = 100 #Número de generaciones
 file_population = open("population.txt",'w') 
 file_fitness = open("fitness.txt",'w')
 
@@ -120,21 +120,39 @@ population = crear_poblacion()  # Inicializar una poblacion
 print("Población Inicial:")
 show_population(population)
 
+stop = False
 # Se evoluciona la poblacion
 for i in range(evolution):
-    if(i==0) or (i==1) or (i==evolution-2) or (i==evolution-1):
-        #print("Generacion ",i)
-        file_population.write("Generacion "+str(i)+"\n")
-        #show_population(population)
-        write_population(population)
-        #print("--------------------------------\n")
-        file_population.write("--------------------------------\n")
+    #print("Generacion ",i)
+    file_population.write("Generacion "+str(i)+"\n")
+    #show_population(population)
+    write_population(population)
+    #print("--------------------------------\n")
+    file_population.write("--------------------------------\n")
     population = selection_and_reproduction(population)
     population = mutation(population)
+    if stop:
+        print("Población Final: ")
+        show_population(population)
+        print("--------------------------------")
+        print("Palabra encontrada en la generacion "+str(i))
+        print("--------------------------------")
+        break
+    else:
+        if i == evolution-1:
+            print("Población Final: ")
+            show_population(population)
+            print("--------------------------------")
+            print("Palabra no encontrada despues de "+str(i+1)+" generaciones :(")
+            print("--------------------------------")
+
+    for element in population:
+        if(element == modelo):
+            stop = True
+            break
+
 
 #print("\nPoblacion Final:\n%s" % (population))  # Se muestra la poblacion evolucionada
-print("Población Final: ")
-show_population(population)
 
 file_population.close()
 print("\n\n")
